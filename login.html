@@ -1,23 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Login | Cutis AI</title>
-  <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cutis AI - Secure Access</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="design_login.css">
 </head>
-<body class="center">
+<body>
 
-  <div class="card">
-    <h2>Login to Cutis AI</h2>
-
-    <input type="email" placeholder="Email" required>
-    <input type="password" placeholder="Password" required>
-
-    <button onclick="login()">Login</button>
-
-    <p class="small">Demo Mode (No backend auth yet)</p>
+  <!-- Animated Background -->
+  <div class="ambient-background">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
   </div>
 
-<script src="js/auth.js"></script>
+  <main class="login-wrapper">
+    <div class="login-card">
+
+      <!-- Header -->
+      <header class="card-header">
+        <h1 class="brand-name">Cutis AI</h1>
+        <p class="subtitle">AI-Powered Skin Health Platform</p>
+      </header>
+
+      <!-- Login Form -->
+      <form class="login-form" onsubmit="login(event)">
+
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="dr.smith@hospital.com"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            required
+          />
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Access Portal →
+        </button>
+
+      </form>
+
+      <!-- Footer -->
+      <footer class="card-footer">
+        <div class="secure-badge">
+          🔒 Secure medical-grade authentication
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- JS -->
+  <script src="login_js.js"></script>
 </body>
 </html>
