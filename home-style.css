@@ -1,0 +1,189 @@
+/* Navigation */
+.navbar {
+    height: 80px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: rgba(10, 15, 26, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.nav-links { display: flex; list-style: none; gap: 2rem; }
+.nav-links a { text-decoration: none; color: var(--text-main); font-size: 0.9rem; transition: 0.3s; }
+.nav-links a:hover { color: var(--primary); }
+
+/* Hero Section */
+.hero { padding: 6rem 0; background: radial-gradient(circle at top right, #1e293b, #0a0f1a); }
+.hero-grid { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 4rem; 
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.badge { color: var(--primary); text-transform: uppercase; font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; }
+
+.hero-image img {
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* Disclaimer Bar */
+.disclaimer-bar {
+    background: #1e1b4b;
+    padding: 1.5rem 0;
+    font-size: 0.85rem;
+    border-top: 1px solid var(--primary);
+    border-bottom: 1px solid var(--primary);
+    text-align: center;
+}
+
+/* Section Layouts */
+.section { padding: 8rem 0; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+.section-header { text-align: center; margin-bottom: 4rem; }
+
+/* Metrics */
+.metrics-grid { 
+    display: flex; 
+    justify-content: space-around; 
+    text-align: center; 
+    padding: 4rem 0;
+    border-top: 1px solid var(--border);
+}
+.metric-val { font-size: 3rem; font-weight: 700; color: var(--primary); }
+
+
+
+
+/* Fix for Step Cards (The Path to Skin Awareness) */
+.step-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 2rem; 
+    margin-top: 3rem;
+}
+
+.step-card {
+    background: var(--bg-card);
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: 0.3s;
+}
+
+.step-num { 
+    font-size: 3rem; 
+    font-weight: 800; 
+    color: rgba(45, 212, 191, 0.1); 
+    position: absolute; 
+    top: 10px; 
+    right: 20px; 
+}
+
+/* Fix for Patterns (Conditions Grid) */
+.conditions-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.5rem; 
+    margin-top: 2rem;
+}
+
+.condition-item {
+    background: var(--glass);
+    padding: 1.5rem;
+    border-left: 4px solid var(--primary);
+    font-weight: 500;
+}
+
+/* Fix for AI Explanation Section */
+.tech-flex {
+    display: flex;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+}
+
+.tech-content { flex: 1; }
+.tech-list { 
+    list-style: none; 
+    margin-top: 2rem; 
+}
+
+.tech-list li {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.tech-list li::before {
+    content: "✦";
+    color: var(--primary);
+    position: absolute;
+    left: 0;
+}
+
+/* Background Color for Alt Sections */
+.bg-alt { background-color: var(--bg-card); }
+
+/* Responsive fix for Mobile */
+@media (max-width: 768px) {
+    .conditions-grid, .tech-flex {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+}
+
+
+
+/* CTA Final Section */
+.cta-box {
+    background: linear-gradient(135deg, #134e4a 0%, #0a0f1a 100%);
+    padding: 5rem;
+    border-radius: 30px;
+    text-align: center;
+    border: 1px solid var(--border);
+    margin-top: 4rem;
+}
+
+.cta-box h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+.btn-lg { padding: 1.2rem 2.5rem; font-size: 1.1rem; }
+
+/* Footer */
+.footer {
+    padding: 4rem 0 2rem 0;
+    border-top: 1px solid var(--border);
+    background: #050810;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #475569;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}

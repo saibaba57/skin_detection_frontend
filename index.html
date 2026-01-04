@@ -1,50 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Cutis AI | Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cutis AI | AI-Assisted Skin Awareness</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="home-style.css">
 </head>
 <body>
 
-<!-- Sidebar -->
-<div class="sidebar">
-  <h2>Cutis AI</h2>
-  <ul>
-    <li>Upload Image</li>
-    <li>Live Camera</li>
-    <li>Results</li>
-  </ul>
-</div>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">CUTIS<span>AI</span></div>
+            <ul class="nav-links">
+                <li><a href="#how-it-works">Process</a></li>
+                <li><a href="#why-cutis">Benefits</a></li>
+                <li><a href="#disclaimer">Safety</a></li>
+            </ul>
+            <a href="login.html" class="btn btn-outline">Launch Platform</a>
+        </div>
+    </nav>
 
-<!-- Main Content -->
-<div class="main">
-  <h1>AI Skin Detection</h1>
+    <header class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <span class="badge">Next-Gen Skin Awareness</span>
+                <h1>Understand Your Skin with AI-Assisted Precision</h1>
+                <p>Cutis AI provides preliminary visual insights into skin patterns, empowering you with the knowledge to manage your skin health with confidence.</p>
+                <div class="hero-btns">
+                    <a href="login.html" class="btn btn-primary">Start Skin Scan</a>
+                    <a href="#how-it-works" class="btn btn-text">How it works →</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="glass-card">
+                    <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=800&q=80" alt="Dermatology Consultation Visual">
+                    <div class="scan-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </header>
 
-  <!-- Upload Section -->
-  <div class="card">
-    <h3>Upload Skin Image</h3>
-    <input type="file" id="imageInput" accept="image/*">
-    <img id="preview">
-    <button onclick="analyze()">Analyze Skin</button>
-    <p id="loader">Analyzing using AI...</p>
-  </div>
+    <section id="disclaimer" class="disclaimer-bar">
+        <div class="container">
+            <p><strong>Medical Disclaimer:</strong> Cutis AI is an informational decision-support tool. It does not provide medical diagnoses, treatments, or cures. All results are preliminary insights based on visual patterns. Always consult a qualified dermatologist for clinical evaluation.</p>
+        </div>
+    </section>
 
-  <!-- Result -->
-  <div class="card" id="resultBox">
-    <h3>Detection Result</h3>
-    <p><b>Skin Type:</b> <span id="result"></span></p>
-    <p><b>Confidence:</b> <span id="confidence"></span></p>
-  </div>
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>The Path to Skin Awareness</h2>
+                <p>Four simple steps to better understand your skin's visual health.</p>
+            </div>
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Capture</h3>
+                    <p>Upload a clear, well-lit image of the skin area of concern.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>Analyze</h3>
+                    <p>Our AI-assisted engine processes visual patterns and textures.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Insight</h3>
+                    <p>Receive an instant report highlighting detected skin irregularities.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">04</div>
+                    <h3>Guidance</h3>
+                    <p>Access educational resources and guidance for next steps.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <!-- Live Camera -->
-  <div class="card">
-    <h3>Live Camera Scan (Beta)</h3>
-    <video id="video" autoplay></video><br>
-    <button onclick="startCamera()">Start Camera</button>
-  </div>
-</div>
+    <section class="section bg-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Patterns We Recognize</h2>
+                <p>Our platform is trained to identify common visual skin characteristics.</p>
+            </div>
+            <div class="conditions-grid">
+                <div class="condition-item">Common Acne Variations</div>
+                <div class="condition-item">Pigmented Skin Marks</div>
+                <div class="condition-item">Benign Visual Features</div>
+                <div class="condition-item">Surface Irregularities</div>
+            </div>
+        </div>
+    </section>
 
-<script src="js/app.js"></script>
+    <section class="section ai-tech">
+        <div class="container tech-flex">
+            <div class="tech-content">
+                <h2>Intelligent Pattern Recognition</h2>
+                <p>Cutis AI utilizes deep learning architectures to compare uploaded images against vast libraries of visual skin data. Instead of guessing, the platform identifies statistical similarities in skin texture, color distribution, and structural borders.</p>
+                <ul class="tech-list">
+                    <li><strong>Smart:</strong> Data-driven visual analysis.</li>
+                    <li><strong>Accessible:</strong> Available on any web-enabled device.</li>
+                    <li><strong>Private:</strong> Secure processing for your peace of mind.</li>
+                </ul>
+            </div>
+            <div class="tech-visual">
+                 
+            </div>
+        </div>
+    </section>
+
+    <section class="metrics">
+        <div class="container metrics-grid">
+            <div class="metric-item">
+                <div class="metric-val">150k+</div>
+                <div class="metric-label">Users Onboarded</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-val">500k+</div>
+                <div class="metric-label">Scans Processed</div>
+            </div>
+            <div class="metric-item">
+                <div class="metric-val">98%</div>
+                <div class="metric-label">User Satisfaction</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-final section">
+        <div class="container">
+            <div class="cta-box">
+                <h2>Ready for a clearer perspective?</h2>
+                <p>Join thousands of women taking a proactive approach to their skin awareness today.</p>
+                <a href="#" class="btn btn-primary btn-lg">Start Your Free Analysis</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="logo">CUTIS<span>AI</span></div>
+                <p>Advancing early skin awareness through accessible technology.</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Cutis AI Platform. Not a medical device.</p>
+            </div>
+        </div>
+    </footer>
+
 </body>
 </html>

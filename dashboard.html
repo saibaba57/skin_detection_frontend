@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Dashboard | Cutis AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dash-style.css">
+</head>
+<body class="dash-layout">
+
+    <aside class="sidebar">
+        <div class="logo">CUTIS<span>AI</span></div>
+        <nav>
+            <a href="#" class="active">New Scan</a>
+            <a href="#">History</a>
+            <a href="index.html">Logout</a>
+        </nav>
+    </aside>
+
+    <main class="content">
+        <header>
+            <h2>AI-Assisted Skin Analysis</h2>
+            <p>Upload a clear, well-lit photo for preliminary insights.</p>
+        </header>
+
+        <div class="glass-card upload-zone" id="drop-zone">
+            <div class="upload-icon">✦</div>
+            <p>Drag & Drop or Click to Upload</p>
+            <input type="file" id="file-input" hidden>
+            <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Choose File</button>
+        </div>
+
+        <section class="results-grid" id="results-view" style="display: none; margin-top: 30px;">
+            <div class="glass-card">
+                <h4>Visual Preview</h4>
+                <div id="image-preview" style="width: 100%; height: 250px; background: #1e293b; border-radius: 12px; margin-top: 10px;"></div>
+            </div>
+            
+            <div class="glass-card">
+                <h4>Preliminary Insights</h4>
+                <div id="analysis-status" class="status-badge" style="color: #2dd4bf; margin: 10px 0;">Processing...</div>
+                <p id="insight-text" style="display: none; color: #94a3b8;">
+                    Our AI-assisted analysis has identified visual patterns common in <strong>Visible Skin Irregularities</strong>. 
+                    Please consult a professional for a formal evaluation.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

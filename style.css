@@ -1,87 +1,42 @@
+:root {
+    --primary: #2dd4bf;
+    --primary-dark: #14b8a6;
+    --bg-dark: #0a0f1a;
+    --bg-card: #161e2d;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass: rgba(255, 255, 255, 0.05);
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f9fc;
-  margin: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
 }
 
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
 }
 
-.card {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  text-align: center;
-}
+.btn-primary { background: var(--primary); color: var(--bg-dark); }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); }
 
-.hero {
-  width: 420px;
-}
+.logo { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; color: white; text-decoration: none;}
+.logo span { color: var(--primary); }
 
-.version {
-  color: #64748b;
-  font-size: 14px;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-}
-
-button {
-  padding: 10px 20px;
-  background: #0ea5e9;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.sidebar {
-  width: 220px;
-  height: 100vh;
-  background: #0ea5e9;
-  color: white;
-  padding: 20px;
-  position: fixed;
-}
-
-.sidebar h2 {
-  margin-bottom: 30px;
-}
-
-.sidebar ul li {
-  list-style: none;
-  margin: 15px 0;
-}
-
-.main {
-  margin-left: 240px;
-  padding: 30px;
-}
-
-#preview {
-  width: 200px;
-  display: block;
-  margin: 10px auto;
-}
-
-#loader {
-  display: none;
-  color: orange;
-}
-
-#resultBox {
-  display: none;
-}
-
-video {
-  width: 300px;
-  border-radius: 8px;
+.glass-card {
+    background: var(--glass);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
 }
