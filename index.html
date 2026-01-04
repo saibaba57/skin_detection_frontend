@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cutis AI | Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Cutis AI</h2>
+  <ul>
+    <li>Upload Image</li>
+    <li>Live Camera</li>
+    <li>Results</li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <h1>AI Skin Detection</h1>
+
+  <!-- Upload Section -->
+  <div class="card">
+    <h3>Upload Skin Image</h3>
+    <input type="file" id="imageInput" accept="image/*">
+    <img id="preview">
+    <button onclick="analyze()">Analyze Skin</button>
+    <p id="loader">Analyzing using AI...</p>
+  </div>
+
+  <!-- Result -->
+  <div class="card" id="resultBox">
+    <h3>Detection Result</h3>
+    <p><b>Skin Type:</b> <span id="result"></span></p>
+    <p><b>Confidence:</b> <span id="confidence"></span></p>
+  </div>
+
+  <!-- Live Camera -->
+  <div class="card">
+    <h3>Live Camera Scan (Beta)</h3>
+    <video id="video" autoplay></video><br>
+    <button onclick="startCamera()">Start Camera</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
