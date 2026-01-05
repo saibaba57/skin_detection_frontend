@@ -19,35 +19,46 @@
     </aside>
 
     <main class="content">
-        <header>
-            <h2>AI-Assisted Skin Analysis</h2>
-            <p>Upload a clear, well-lit photo for preliminary insights.</p>
-        </header>
+    <header>
+        <h2>AI-Assisted Skin Analysis</h2>
+        <p>Choose your preferred method for preliminary insights.</p>
+    </header>
 
-        <div class="glass-card upload-zone" id="drop-zone">
-            <div class="upload-icon">✦</div>
-            <p>Drag & Drop or Click to Upload</p>
-            <input type="file" id="file-input" hidden>
-            <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Choose File</button>
+    <div class="selection-grid" style="display: flex; gap: 20px; margin-bottom: 30px;">
+        <button class="btn btn-outline" id="btn-upload-mode">📁 Upload Image</button>
+        <button class="btn btn-primary" id="id-start-camera">📸 Live Camera Scan</button>
+    </div>
+
+    <div id="camera-container" class="glass-card" style="display: none; padding: 20px; text-align: center;">
+        <video id="webcam" autoplay playsinline style="width: 100%; max-width: 500px; border-radius: 15px; background: #000;"></video>
+        <canvas id="photo-canvas" style="display: none;"></canvas>
+        <div style="margin-top: 15px;">
+            <button class="btn btn-primary" id="btn-capture">Capture & Analyze</button>
+            <button class="btn btn-outline" id="btn-cancel-cam">Cancel</button>
         </div>
+    </div>
 
-        <section class="results-grid" id="results-view" style="display: none; margin-top: 30px;">
-            <div class="glass-card">
-                <h4>Visual Preview</h4>
-                <div id="image-preview" style="width: 100%; height: 250px; background: #1e293b; border-radius: 12px; margin-top: 10px;"></div>
-            </div>
-            
-            <div class="glass-card">
-                <h4>Preliminary Insights</h4>
-                <div id="analysis-status" class="status-badge" style="color: #2dd4bf; margin: 10px 0;">Processing...</div>
-                <p id="insight-text" style="display: none; color: #94a3b8;">
-                    Our AI-assisted analysis has identified visual patterns common in <strong>Visible Skin Irregularities</strong>. 
-                    Please consult a professional for a formal evaluation.
-                </p>
-            </div>
-        </section>
-    </main>
+    <div class="glass-card upload-zone" id="drop-zone">
+        <div class="upload-icon">✦</div>
+        <p>Drag & Drop or Click to Upload</p>
+        <input type="file" id="file-input" hidden>
+        <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Choose File</button>
+    </div>
 
+    <section class="results-grid" id="results-view" style="display: none; margin-top: 30px;">
+        <div class="glass-card">
+            <h4>Visual Preview</h4>
+            <div id="image-preview" style="width: 100%; height: 250px; background: #1e293b; border-radius: 12px; margin-top: 10px;"></div>
+        </div>
+        <div class="glass-card">
+            <h4>Preliminary Insights</h4>
+            <div id="analysis-status" class="status-badge" style="color: #2dd4bf; margin: 10px 0;">Processing...</div>
+            <p id="insight-text" style="display: none; color: #94a3b8;">
+                AI identified visual patterns common in <strong>Visible Skin Irregularities</strong>.
+            </p>
+        </div>
+    </section>
+</main>
     <script src="script.js"></script>
 </body>
 </html>
