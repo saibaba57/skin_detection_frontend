@@ -26,12 +26,8 @@ async function login(event) {
 
     if (data.success) {
       // Login successful → go to upload/scan page
-<<<<<<< HEAD:login_js.js
-      window.location.href = "../Dashboard_page/dashboard.html";
-=======
       window.location.href = "../Dashboard_page/dashboard.html";
 
->>>>>>> 49155098d1313ae33bf833d5a2968e24ca37e723:login_page/login_js.js
     } else {
       alert(data.message || "Login failed");
     }

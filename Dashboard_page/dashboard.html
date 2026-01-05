@@ -3,62 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analysis Dashboard | Cutis AI</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Cutis AI - Medical Skin Analysis</title>
     <link rel="stylesheet" href="dash-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="dash-layout">
+<body>
 
-    <aside class="sidebar">
-        <div class="logo">CUTIS<span>AI</span></div>
-        <nav>
-            <a href="#" class="active">New Scan</a>
-            <a href="#">History</a>
-            <a href="index.html">Logout</a>
-        </nav>
-    </aside>
+    <div class="mobile-header">
+        <button class="hamburger" id="menuToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="brand-mobile">CUTIS AI</div>
+        <div style="width: 24px;"></div> </div>
 
-    <main class="content">
-    <header>
-        <h2>AI-Assisted Skin Analysis</h2>
-        <p>Choose your preferred method for preliminary insights.</p>
-    </header>
+    <div class="dashboard-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="brand-name">CUTIS AI</span>
+            </div>
 
-    <div class="selection-grid" style="display: flex; gap: 20px; margin-bottom: 30px;">
-        <button class="btn btn-outline" id="btn-upload-mode">📁 Upload Image</button>
-        <button class="btn btn-primary" id="id-start-camera">📸 Live Camera Scan</button>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="9" y1="13" x2="9.01" y2="13"></line>
+                        <line x1="9" y1="17" x2="9.01" y2="17"></line>
+                        <line x1="13" y1="9" x2="13.01" y2="9"></line>
+                        <line x1="13" y1="13" x2="13.01" y2="13"></line>
+                        <line x1="13" y1="17" x2="13.01" y2="17"></line>
+                    </svg>
+                    New Scan
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    History
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Settings
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item logout">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            
+            <header class="content-header">
+                <div>
+                    <h1>AI-Assisted Skin Analysis</h1>
+                    <p class="subtitle">Medical-grade diagnostic support powered by neural networks</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        Live Camera
+                    </button>
+                    <button class="btn btn-primary" onclick="document.querySelector('.upload-card').click()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Upload Image
+                    </button>
+                </div>
+            </header>
+
+            <div class="upload-section">
+                <div class="upload-card">
+                    <div class="upload-icon-wrapper">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Drag & Drop skin image here</h3>
+                    <p>Supports JPG, PNG, DICOM (Max 10MB)</p>
+                    <button class="btn btn-outline-sm">Browse Files</button>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <div class="glass-card preview-card">
+                    <div class="card-header">
+                        <h4>Scan Preview</h4>
+                        <span class="badge badge-date">--:--</span>
+                    </div>
+                    <div class="image-container">
+                        <div class="scan-overlay"></div>
+                        <img src="" alt="Skin Scan" class="scan-img">
+                    </div>
+                    <div class="meta-data">
+                        <div class="meta-item">
+                            <span class="label">Zoom</span>
+                            <span class="value">4.5x</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="label">Light</span>
+                            <span class="value">Polarized</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card analysis-card">
+                    <div class="card-header">
+                        <h4>AI Analysis Report</h4>
+                        <span class="badge badge-status">Analysis Complete</span>
+                    </div>
+                    
+                    <div class="diagnosis-box">
+                        <span class="diagnosis-label">Primary Detection</span>
+                        <h2 class="diagnosis-title">Benign Nevus</h2>
+                        <div class="confidence-meter">
+                            <div class="meter-label">
+                                <span>Confidence Score</span>
+                                <span>98.4%</span>
+                            </div>
+                            <div class="progress-bg">
+                                <div class="progress-fill" style="width: 98.4%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="metrics-list">
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-name">Asymmetry</span>
+                                <span class="metric-val low">Low Risk</span>
+                            </div>
+                            <div class="progress-bg sm">
+                                <div class="progress-fill low" style="width: 12%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-name">Border Irregularity</span>
+                                <span class="metric-val medium">Moderate</span>
+                            </div>
+                            <div class="progress-bg sm">
+                                <div class="progress-fill medium" style="width: 45%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-info">
+                                <span class="metric-name">Color Variation</span>
+                                <span class="metric-val low">Uniform</span>
+                            </div>
+                            <div class="progress-bg sm">
+                                <div class="progress-fill low" style="width: 8%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-footer">
+                        <button class="btn btn-primary full-width">View Detailed Report</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
     </div>
 
-    <div id="camera-container" class="glass-card" style="display: none; padding: 20px; text-align: center;">
-        <video id="webcam" autoplay playsinline style="width: 100%; max-width: 500px; border-radius: 15px; background: #000;"></video>
-        <canvas id="photo-canvas" style="display: none;"></canvas>
-        <div style="margin-top: 15px;">
-            <button class="btn btn-primary" id="btn-capture">Capture & Analyze</button>
-            <button class="btn btn-outline" id="btn-cancel-cam">Cancel</button>
-        </div>
-    </div>
-
-    <div class="glass-card upload-zone" id="drop-zone">
-        <div class="upload-icon">✦</div>
-        <p>Drag & Drop or Click to Upload</p>
-        <input type="file" id="file-input" hidden>
-        <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">Choose File</button>
-    </div>
-
-    <section class="results-grid" id="results-view" style="display: none; margin-top: 30px;">
-        <div class="glass-card">
-            <h4>Visual Preview</h4>
-            <div id="image-preview" style="width: 100%; height: 250px; background: #1e293b; border-radius: 12px; margin-top: 10px;"></div>
-        </div>
-        <div class="glass-card">
-            <h4>Preliminary Insights</h4>
-            <div id="analysis-status" class="status-badge" style="color: #2dd4bf; margin: 10px 0;">Processing...</div>
-            <p id="insight-text" style="display: none; color: #94a3b8;">
-                AI identified visual patterns common in <strong>Visible Skin Irregularities</strong>.
-            </p>
-        </div>
-    </section>
-</main>
-    <script src="script.js"></script>
+    <script src="dash.js"></script>
 </body>
 </html>
