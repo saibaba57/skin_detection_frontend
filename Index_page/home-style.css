@@ -269,20 +269,44 @@ h2 { font-size: 2.5rem; }
     text-align: center;
 }
 
+/* --- Updated Patterns Grid for 6 Items --- */
 .conditions-grid { 
     display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for 6 items */
     gap: 1.5rem; 
     margin-top: 2rem;
 }
 
-.condition-item {
-    background: var(--glass);
-    padding: 1.5rem;
-    border-left: 4px solid var(--primary); 
-    font-weight: 500;
+@media (max-width: 968px) {
+    .conditions-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+.condition-item {
+    background: var(--glass);
+    padding: 1.8rem;
+    border-left: 4px solid var(--primary); 
+    font-weight: 600;
+    color: var(--text-main);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.condition-item:hover {
+    background: rgba(94, 234, 212, 0.1);
+}
+
+/* --- Responsive Fix for Mobile/Tablets --- */
+@media (max-width: 968px) {
+    .conditions-grid { 
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+}
+
+@media (max-width: 600px) {
+    .conditions-grid { 
+        grid-template-columns: 1fr; /* 1 column on small phones */
+    }
+}
 .bg-alt { background-color: var(--bg-card); }
 
 .metrics-grid { 
@@ -296,10 +320,25 @@ h2 { font-size: 2.5rem; }
 
 .cta-box {
     background: linear-gradient(135deg, #134e4a 0%, #0a0f1a 100%);
-    padding: 5rem;
+    padding: 5rem 2rem;
     border-radius: 30px;
-    text-align: center;
+    text-align: center; /* Ensures text and button are centered */
     border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers items horizontally */
+}
+
+.cta-text {
+    margin-bottom: 3.5rem !important; /* Increased GAP between text and button */
+    color: var(--text-dim);
+    font-size: 1.1rem;
+}
+
+.btn-lg {
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+    transition: 0.3s;
 }
 
 /* --- 7. RESPONSIVE DESIGN --- */
