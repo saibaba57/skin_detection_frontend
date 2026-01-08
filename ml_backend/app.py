@@ -3,22 +3,33 @@ import os
 import tensorflow as tf
 import numpy as np
 from PIL import Image
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# Load model
-model = tf.keras.models.load_model("skin_model.keras")
+# ===============================
+# FIX 1: Correct model path
+# ===============================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "skin_model.keras")
+
+model = tf.keras.models.load_model(MODEL_PATH)
+
 class_names = ['acne', 'dry', 'fungal', 'normal', 'oily']
 
-# Upload folder
-UPLOAD_FOLDER = "uploads"
+# ===============================
+# FIX 2: Upload folder path
+# ===============================
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/", methods=["GET"])
 def home():
     return "Skin Detection Backend is Running"
 
-# 🔥 THIS WAS MISSING
+# ===============================
+# Image preprocessing
+# ===============================
 def preprocess_image(image_path):
     img = Image.open(image_path).convert("RGB")
     img = img.resize((224, 224))
@@ -32,7 +43,12 @@ def predict():
         return jsonify({"error": "No image uploaded"}), 400
 
     image = request.files["image"]
-    image_path = os.path.join(UPLOAD_FOLDER, image.filename)
+
+    if image.filename == "":
+        return jsonify({"error": "Empty filename"}), 400
+
+    filename = secure_filename(image.filename)
+    image_path = os.path.join(UPLOAD_FOLDER, filename)
     image.save(image_path)
 
     img = preprocess_image(image_path)
