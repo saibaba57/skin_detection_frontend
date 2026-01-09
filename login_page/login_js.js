@@ -1,13 +1,10 @@
 async function login(event) {
-  event.preventDefault(); // stop page reload
+  event.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  if (!email || !password) {
-    alert("Please enter email and password");
-    return;
-  }
+  console.log("Sending to backend:", email, password);
 
   try {
     const response = await fetch("http://127.0.0.1:5000/login", {
@@ -15,7 +12,6 @@ async function login(event) {
       headers: {
         "Content-Type": "application/json"
       },
-      credentials: "include", // IMPORTANT for Flask session
       body: JSON.stringify({
         email: email,
         password: password
@@ -23,17 +19,16 @@ async function login(event) {
     });
 
     const data = await response.json();
+    console.log("Response from backend:", data);
 
     if (data.success) {
-      // Login successful → go to upload/scan page
-      window.location.href = "../Dashboard_page/dashboard.html";
-
+      alert("Login API working ✔️ (check console)");
     } else {
-      alert(data.message || "Login failed");
+      alert("Login failed ❌");
     }
 
   } catch (error) {
-    console.error(error);
-    alert("Backend server not running");
+    console.error("Error connecting to backend:", error);
+    alert("Backend not reachable");
   }
 }

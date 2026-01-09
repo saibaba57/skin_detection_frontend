@@ -1,77 +1,98 @@
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import sqlite3
+import hashlib
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app)
 
-app.secret_key = "cutis_ai_secret_key"
+DB_NAME = "login_backend/users.db"
 
-# -----------------------------
-# TEMP USER STORAGE (NO DB)
-# -----------------------------
-users = {
-    "admin@cutis.ai": {
-        "password": "123456",
-        "name": "Admin User"
-    }
-}
 
-@app.route("/")
-def home():
-    return "Cutis AI Backend Running"
+# ---------- DATABASE ----------
+def get_db():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-# -----------------------------
-# LOGIN API
-# -----------------------------
+
+def init_db():
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            username TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+
+init_db()
+
+
+# ---------- HELPERS ----------
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
+# ---------- ROUTES ----------
+
 @app.route("/login", methods=["POST"])
 def login():
     data = request.json
     email = data.get("email")
-    password = data.get("password")
+    password = hash_password(data.get("password"))
 
-    if email in users:
-        if users[email]["password"] == password:
-            session["user"] = email
-            return jsonify({
-                "success": True,
-                "new_user": False,
-                "message": "Login successful"
-            })
-        else:
-            return jsonify({
-                "success": False,
-                "message": "Incorrect password"
-            }), 401
+    conn = get_db()
+    cursor = conn.cursor()
 
-    # New user
-    users[email] = {
-        "password": password,
-        "name": email.split("@")[0]
-    }
-    session["user"] = email
+    cursor.execute(
+        "SELECT * FROM users WHERE email=? AND password=?",
+        (email, password)
+    )
+    user = cursor.fetchone()
+
+    # Existing user
+    if user:
+        return jsonify({
+            "success": True,
+            "needs_username": user["username"] is None
+        })
+
+    # New user → create account
+    cursor.execute(
+        "INSERT INTO users (email, password) VALUES (?, ?)",
+        (email, password)
+    )
+    conn.commit()
 
     return jsonify({
         "success": True,
-        "new_user": True,
-        "message": "New user created"
+        "needs_username": True
     })
 
-@app.route("/me")
-def me():
-    if "user" in session:
-        email = session["user"]
-        return jsonify({
-            "logged_in": True,
-            "email": email,
-            "name": users[email]["name"]
-        })
-    return jsonify({"logged_in": False}), 401
 
-@app.route("/logout", methods=["POST"])
-def logout():
-    session.pop("user", None)
+@app.route("/setup-username", methods=["POST"])
+def setup_username():
+    data = request.json
+    email = data.get("email")
+    username = data.get("username")
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE users SET username=? WHERE email=?",
+        (username, email)
+    )
+    conn.commit()
+
     return jsonify({"success": True})
 
+
 if __name__ == "__main__":
-    print("Starting Cutis AI backend...")
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    app.run(debug=True)
