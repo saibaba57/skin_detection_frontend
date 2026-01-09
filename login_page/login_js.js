@@ -1,10 +1,13 @@
 async function login(event) {
   event.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-  console.log("Sending to backend:", email, password);
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
 
   try {
     const response = await fetch("http://127.0.0.1:5000/login", {
@@ -12,23 +15,31 @@ async function login(event) {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
+      body: JSON.stringify({ email, password })
     });
 
     const data = await response.json();
-    console.log("Response from backend:", data);
+    console.log("Login response:", data);
 
     if (data.success) {
-      alert("Login API working ✔️ (check console)");
+
+      // ✅ MOST IMPORTANT LINE (YE MISSING THI)
+      localStorage.setItem("email", email);
+
+      if (data.needs_username) {
+        // New user → username page
+        window.location.href = "setup_username.html";
+      } else {
+        // Existing user → dashboard
+        window.location.href = "../Dashboard_page/dashboard.html";
+      }
+
     } else {
-      alert("Login failed ❌");
+      alert("Login failed");
     }
 
-  } catch (error) {
-    console.error("Error connecting to backend:", error);
-    alert("Backend not reachable");
+  } catch (err) {
+    console.error(err);
+    alert("Backend server not running");
   }
 }
