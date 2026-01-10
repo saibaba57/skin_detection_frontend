@@ -15,6 +15,7 @@ async function login(event) {
       headers: {
         "Content-Type": "application/json"
       },
+      credentials: "include",   // 🔥🔥 THIS WAS MISSING
       body: JSON.stringify({ email, password })
     });
 
@@ -22,18 +23,11 @@ async function login(event) {
     console.log("Login response:", data);
 
     if (data.success) {
-
-      // ✅ MOST IMPORTANT LINE (YE MISSING THI)
-      localStorage.setItem("email", email);
-
       if (data.needs_username) {
-        // New user → username page
         window.location.href = "setup_username.html";
       } else {
-        // Existing user → dashboard
         window.location.href = "../Dashboard_page/dashboard.html";
       }
-
     } else {
       alert("Login failed");
     }

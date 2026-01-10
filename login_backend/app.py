@@ -4,7 +4,11 @@ import sqlite3
 import hashlib
 
 app = Flask(__name__)
+
+# 🔑 SESSION CONFIG (SIMPLE & SAFE)
 app.secret_key = "cutis_ai_secret_key"
+
+# ✅ SIMPLE CORS (localhost ke liye best)
 CORS(app, supports_credentials=True)
 
 DB_NAME = "login_backend/users.db"
@@ -52,7 +56,6 @@ def login():
         return jsonify({"success": False}), 400
 
     hashed = hash_password(password)
-
     conn = get_db()
     cursor = conn.cursor()
 
@@ -70,12 +73,12 @@ def login():
             "needs_username": user["username"] is None
         })
 
+    # New user
     cursor.execute(
         "INSERT INTO users (email, password) VALUES (?, ?)",
         (email, hashed)
     )
     conn.commit()
-
     session["user_id"] = cursor.lastrowid
     conn.close()
 
@@ -106,27 +109,6 @@ def setup_username():
     conn.close()
 
     return jsonify({"success": True})
-
-
-@app.route("/me", methods=["GET"])
-def me():
-    if "user_id" not in session:
-        return jsonify({"logged_in": False}), 401
-
-    conn = get_db()
-    cursor = conn.cursor()
-    cursor.execute(
-        "SELECT email, username FROM users WHERE id=?",
-        (session["user_id"],)
-    )
-    user = cursor.fetchone()
-    conn.close()
-
-    return jsonify({
-        "logged_in": True,
-        "email": user["email"],
-        "username": user["username"]
-    })
 
 
 @app.route("/logout", methods=["POST"])
