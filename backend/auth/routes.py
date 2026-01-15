@@ -1,18 +1,14 @@
-from flask import Flask, request, jsonify, session
+from flask import Blueprint, request, jsonify, session
 from flask_cors import CORS
 import sqlite3
 import hashlib
+import os
 
-app = Flask(__name__)
+auth_bp = Blueprint("auth", __name__)
+CORS(auth_bp, supports_credentials=True)
 
-# 🔑 SESSION CONFIG (SIMPLE & SAFE)
-app.secret_key = "cutis_ai_secret_key"
-
-# ✅ SIMPLE CORS (localhost ke liye best)
-CORS(app, supports_credentials=True)
-
-DB_NAME = "login_backend/users.db"
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_NAME = os.path.join(BASE_DIR, "../database/users.db")
 
 # ---------- DATABASE ----------
 def get_db():
@@ -38,15 +34,13 @@ def init_db():
 
 init_db()
 
-
 # ---------- HELPERS ----------
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-
 # ---------- ROUTES ----------
 
-@app.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.json
     email = data.get("email")
@@ -73,7 +67,6 @@ def login():
             "needs_username": user["username"] is None
         })
 
-    # New user
     cursor.execute(
         "INSERT INTO users (email, password) VALUES (?, ?)",
         (email, hashed)
@@ -88,14 +81,12 @@ def login():
     })
 
 
-@app.route("/setup-username", methods=["POST"])
+@auth_bp.route("/setup-username", methods=["POST"])
 def setup_username():
     if "user_id" not in session:
-        return jsonify({"success": False, "message": "Not logged in"}), 401
+        return jsonify({"success": False}), 401
 
-    data = request.json
-    username = data.get("username")
-
+    username = request.json.get("username")
     if not username:
         return jsonify({"success": False}), 400
 
@@ -111,11 +102,7 @@ def setup_username():
     return jsonify({"success": True})
 
 
-@app.route("/logout", methods=["POST"])
+@auth_bp.route("/logout", methods=["POST"])
 def logout():
     session.clear()
     return jsonify({"success": True})
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

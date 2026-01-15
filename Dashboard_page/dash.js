@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // --- Elements ---
     const menuToggle = document.getElementById('menuToggle');
     const sidebar = document.getElementById('sidebar');
@@ -7,40 +7,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultsGrid = document.querySelector('.results-grid');
     const scanImage = document.querySelector('.scan-img');
     const browseBtn = document.querySelector('.btn-outline-sm');
-    const cameraBtn = document.querySelector('.btn-secondary'); // Live Camera button
+    const cameraBtn = document.querySelector('.btn-secondary');
 
-    // Create a hidden file input for the click-to-upload functionality
+    const diagnosisTitle = document.querySelector('.diagnosis-title');
+    const confidenceText = document.querySelector('.meter-label span:last-child');
+    const confidenceBar = document.querySelector('.progress-fill');
+
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = 'image/*';
     fileInput.style.display = 'none';
     document.body.appendChild(fileInput);
 
-    // Initial State: Hide results until upload
-    resultsGrid.style.display = 'none';
+    // Ensure results are hidden initially
+    if(resultsGrid) resultsGrid.style.display = 'none';
 
-    // --- Sidebar Logic (Mobile) ---
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sidebar.classList.toggle('active');
-    });
+    // --- Sidebar ---
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('active');
+        });
 
-    document.addEventListener('click', (e) => {
-        if (window.innerWidth <= 768) {
-            if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
-                sidebar.classList.remove('active');
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
             }
-        }
-    });
+        });
+    }
 
-    // --- Upload Interaction Logic ---
+    // --- Upload ---
+    if (uploadCard) {
+        uploadCard.addEventListener('click', () => fileInput.click());
+        // Handle Drag & Drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadCard.addEventListener(eventName, preventDefaults, false);
+        });
 
-    // 1. Click to Upload
-    uploadCard.addEventListener('click', () => fileInput.click());
-    browseBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent double triggering
-        fileInput.click();
-    });
+        uploadCard.addEventListener('drop', (e) => {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) handleFileUpload(files[0]);
+        });
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    if (browseBtn) {
+        browseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+    }
 
     fileInput.addEventListener('change', (e) => {
         if (e.target.files.length > 0) {
@@ -48,102 +70,111 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Drag and Drop Effects
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        uploadCard.addEventListener(eventName, preventDefaults, false);
-    });
+    // ===============================
+    // REAL ML INTEGRATION (FIXED)
+    // ===============================
+    async function handleFileUpload(file) {
 
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-        uploadCard.addEventListener(eventName, () => {
-            uploadCard.style.borderColor = 'var(--primary)';
-            uploadCard.style.background = 'rgba(6, 182, 212, 0.05)';
-            uploadCard.style.transform = 'scale(1.02)';
-        }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        uploadCard.addEventListener(eventName, () => {
-            uploadCard.style.borderColor = 'var(--border-color)';
-            uploadCard.style.background = 'var(--bg-upload)';
-            uploadCard.style.transform = 'scale(1)';
-        }, false);
-    });
-
-    uploadCard.addEventListener('drop', (e) => {
-        const dt = e.dataTransfer;
-        const files = dt.files;
-        if (files.length > 0) {
-            handleFileUpload(files[0]);
-        }
-    });
-
-    // --- Core AI Simulation Logic ---
-
-    function handleFileUpload(file) {
-        // Validate file type
         if (!file.type.startsWith('image/')) {
-            alert('Please upload a valid image file (JPG, PNG).');
+            alert('Please upload a valid image');
             return;
         }
 
-        // 1. Reset Interface
+        // Hide previous results
         resultsGrid.style.display = 'none';
-        
-        // 2. Show Loading State inside Upload Card
+
         const originalContent = uploadCard.innerHTML;
         uploadCard.innerHTML = `
             <div class="spinner"></div>
-            <p style="margin-top: 1rem; color: var(--text-main);">Processing Scan...</p>
-            <p style="font-size: 0.8rem; color: var(--text-muted);">Analyzing texture, pigment, and edges.</p>
+            <p style="margin-top:1rem">Processing Scan...</p>
         `;
-        uploadCard.style.pointerEvents = 'none'; // Disable clicks during load
+        uploadCard.style.pointerEvents = 'none';
 
-        // 3. Simulate AI Latency (2.5 seconds)
-        setTimeout(() => {
-            // Restore upload card (Ready for next scan)
+        // Preview image
+        const reader = new FileReader();
+        reader.onload = e => {
+            if (scanImage) scanImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+
+        const formData = new FormData();
+        // NOTE: This 'image' key must match request.files['image'] in Flask
+        formData.append('image', file); 
+
+        try {
+            // 1. Correct URL (Port 5000)
+            const response = await fetch('http://127.0.0.1:5000/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log("Backend Data:", data); // Debugging line
+
+            // Restore upload UI
             uploadCard.innerHTML = originalContent;
             uploadCard.style.pointerEvents = 'auto';
+
+            // ===== UPDATE REPORT (FIXED) =====
             
-            // Update Image Preview
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                scanImage.src = e.target.result;
+            // 2. Handle data structure (works whether backend returns list or dict)
+            const predictions = Array.isArray(data) ? data : (data.predictions || []);
+
+            if (predictions.length === 0) {
+                alert("No conditions detected.");
+                return;
             }
-            reader.readAsDataURL(file);
 
-            // Update Timestamp
+            // 3. FIX: Use 'condition' (Python) instead of 'disease' (Old JS)
+            diagnosisTitle.innerText = predictions
+                .map(p => (p.condition || "Unknown").toUpperCase())
+                .join(', ');
+
+            // 4. Update Confidence
+            const confValue = predictions[0].confidence || 0;
+            confidenceText.innerText = `${confValue}%`;
+            confidenceBar.style.width = `${confValue}%`;
+
+            // Time
             const dateSpan = document.querySelector('.badge-date');
-            const now = new Date();
-            dateSpan.textContent = `Today, ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
+            if (dateSpan) {
+                const now = new Date();
+                dateSpan.textContent = `Today, ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
+            }
 
-            // Reveal Results with Animation
+            // Show Results Animation
             resultsGrid.style.display = 'grid';
             resultsGrid.style.opacity = '0';
             resultsGrid.style.transform = 'translateY(20px)';
             
-            // Force reflow for transition
-            void resultsGrid.offsetWidth; 
+            // Force reflow for animation
+            void resultsGrid.offsetWidth;
 
-            resultsGrid.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            resultsGrid.style.transition = '0.5s';
             resultsGrid.style.opacity = '1';
             resultsGrid.style.transform = 'translateY(0)';
-            
-            // Scroll to results on mobile
-            if(window.innerWidth < 768) {
+
+            if (window.innerWidth < 768) {
                 resultsGrid.scrollIntoView({ behavior: 'smooth' });
             }
 
-        }, 2500);
+        } catch (err) {
+            console.error("Full Error Details:", err);
+            uploadCard.innerHTML = originalContent;
+            uploadCard.style.pointerEvents = 'auto';
+            
+            // Show the REAL error, not just "Backend error"
+            alert(`Error: ${err.message}`);
+        }
     }
 
-    // --- Camera Button Placeholder ---
-    cameraBtn.addEventListener('click', () => {
-        alert('Camera module requires HTTPS and permission access. (This is a UI demo)');
-    });
-
+    if (cameraBtn) {
+        cameraBtn.addEventListener('click', () => {
+            alert('Camera requires HTTPS');
+        });
+    }
 });
