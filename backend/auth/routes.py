@@ -40,8 +40,13 @@ def hash_password(password):
 
 # ---------- ROUTES ----------
 
-@auth_bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["POST", "OPTIONS"])
 def login():
+
+    # 🔥 Handle CORS preflight
+    if request.method == "OPTIONS":
+        return "", 200
+
     data = request.json
     email = data.get("email")
     password = data.get("password")
@@ -67,6 +72,7 @@ def login():
             "needs_username": user["username"] is None
         })
 
+    # Auto-register if not exists
     cursor.execute(
         "INSERT INTO users (email, password) VALUES (?, ?)",
         (email, hashed)
@@ -81,8 +87,12 @@ def login():
     })
 
 
-@auth_bp.route("/setup-username", methods=["POST"])
+@auth_bp.route("/setup-username", methods=["POST", "OPTIONS"])
 def setup_username():
+
+    if request.method == "OPTIONS":
+        return "", 200
+
     if "user_id" not in session:
         return jsonify({"success": False}), 401
 
@@ -102,7 +112,11 @@ def setup_username():
     return jsonify({"success": True})
 
 
-@auth_bp.route("/logout", methods=["POST"])
+@auth_bp.route("/logout", methods=["POST", "OPTIONS"])
 def logout():
+
+    if request.method == "OPTIONS":
+        return "", 200
+
     session.clear()
     return jsonify({"success": True})

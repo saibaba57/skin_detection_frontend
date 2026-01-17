@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cutis AI - History</title>
+    <link rel="stylesheet" href="dash-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* History Specific Styles */
+        .history-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px 0;
+        }
+        .history-card {
+            background: #1e1e24; border: 1px solid #333; border-radius: 12px; overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .history-card:hover { transform: translateY(-5px); }
+        .card-img { width: 100%; height: 160px; object-fit: cover; border-bottom: 1px solid #333; }
+        .card-body { padding: 15px; color: #e0e0e0; }
+        .card-badge { 
+            display: inline-block; padding: 4px 8px; background: rgba(79, 172, 254, 0.2); 
+            color: #4facfe; border-radius: 4px; font-size: 12px; margin-bottom: 8px; font-weight: bold;
+        }
+        .card-meta { font-size: 0.8rem; color: #888; margin-top: 10px; border-top: 1px solid #333; padding-top: 8px; }
+        .btn-clear { background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <span class="brand-name">CUTIS AI</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="9" y1="13" x2="9.01" y2="13"></line><line x1="9" y1="17" x2="9.01" y2="17"></line><line x1="13" y1="9" x2="13.01" y2="9"></line><line x1="13" y1="13" x2="13.01" y2="13"></line><line x1="13" y1="17" x2="13.01" y2="17"></line></svg>
+                    New Scan
+                </a>
+                <a href="history.html" class="nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    History
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h1>Analysis History</h1>
+                <button onclick="clearHistory()" class="btn-clear">Clear All</button>
+            </div>
+            <div id="history-grid" class="history-grid"></div>
+        </main>
+    </div>
+    <script src="history.js"></script>
+</body>
+</html>
