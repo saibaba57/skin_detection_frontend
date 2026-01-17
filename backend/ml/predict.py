@@ -14,12 +14,12 @@ model = tf.keras.models.load_model(MODEL_PATH)
 
 # Classes (same order used during training)
 CLASS_NAMES = [
-    "acne",
+    "Acne",
+    "Dry",
+    "fungal",
     "Normal",
-    "dry",
-    "dry",
-    "normal",
-    "oily"
+    "Oily",
+    
 ]
 
 CONFIDENCE_THRESHOLD = 70

@@ -1,6 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ===============================
+    // SETTINGS INTEGRATION HELPER
+    // ===============================
+    function getSetting(key, defaultValue) {
+        const saved = localStorage.getItem(`cutis_${key}`);
+        return saved !== null ? JSON.parse(saved) : defaultValue;
+    }
+
+    // ===============================
     // GLOBAL STATE (For History Saving)
     // ===============================
     let currentAnalysisResult = {
@@ -31,10 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const saveHistoryBtn = document.getElementById("save-history-btn");
     const viewReportBtn = document.getElementById("view-report-btn");
+    // NEW: Scan Again Button Selector
+    const scanAgainBtn = document.getElementById("scan-again-btn");
 
     const diagnosisTitle = document.querySelector(".diagnosis-title");
     const confidenceText = document.querySelector(".meter-label span:last-child");
     const confidenceBar = document.querySelector(".progress-fill");
+    const confidenceContainer = document.querySelector(".confidence-meter"); // Added for toggling visibility
 
     // ===============================
     // FILE INPUT (HIDDEN)
@@ -100,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===============================
-    // TASK 1: LIVE CAMERA LOGIC
+    // TASK 1: LIVE CAMERA LOGIC (UPDATED WITH SETTINGS)
     // ===============================
     
     // 1. Open Camera
@@ -108,13 +119,29 @@ document.addEventListener("DOMContentLoaded", () => {
         liveCameraBtn.addEventListener("click", async () => {
             try {
                 cameraModal.style.display = "flex"; // Show Modal
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment" } 
-                });
+
+                // --- READ SETTINGS ---
+                const preferredDevice = getSetting('cameraDeviceId', 'default');
+                const preferredRes = getSetting('resolution', '1080'); // 1080, 720, 480
+                
+                // Construct constraints based on settings
+                const constraints = {
+                    video: {
+                        height: { ideal: parseInt(preferredRes) }
+                    }
+                };
+
+                if (preferredDevice !== 'default') {
+                    constraints.video.deviceId = { exact: preferredDevice };
+                } else {
+                    constraints.video.facingMode = "environment"; // Default fallback
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
             } catch (err) {
                 console.error("Camera Error:", err);
-                alert("Unable to access camera. Please check permissions.");
+                alert("Unable to access camera. Please check permissions or settings.");
                 cameraModal.style.display = "none";
             }
         });
@@ -165,6 +192,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!file.type.startsWith("image/")) {
             alert("Please upload a valid image");
+            return;
+        }
+
+        // --- READ SETTINGS (Max Size Check) ---
+        const maxSizeMB = getSetting('maxImageSize', 5);
+        if (file.size > maxSizeMB * 1024 * 1024) {
+            alert(`File too large. Max allowed size is ${maxSizeMB}MB (See Settings).`);
             return;
         }
 
@@ -227,22 +261,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 .map(p => (p.condition || "Unknown").toUpperCase())
                 .join(", ");
 
-            confidenceText.innerText = `${topConfidence}%`;
-            confidenceBar.style.width = `${topConfidence}%`;
+            // --- READ SETTINGS (Show/Hide Confidence) ---
+            const showConfidence = getSetting('showConfidence', true);
+            
+            if (showConfidence) {
+                if(confidenceContainer) confidenceContainer.style.display = "block"; // Ensure parent is visible
+                confidenceText.innerText = `${topConfidence}%`;
+                confidenceBar.style.width = `${topConfidence}%`;
+            } else {
+                // Hide confidence meter if setting is disabled
+                if(confidenceContainer) confidenceContainer.style.display = "none";
+                else confidenceBar.style.width = "0%"; // Fallback
+            }
 
             const dateSpan = document.querySelector(".badge-date");
             const now = new Date();
             const timestampStr = `Today, ${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
             if (dateSpan) dateSpan.textContent = timestampStr;
 
-            // --- TASK 2: PREPARE DATA FOR HISTORY ---
+            // --- PREPARE DATA ---
             currentAnalysisResult.label = topCondition;
             currentAnalysisResult.confidence = topConfidence;
             currentAnalysisResult.timestamp = new Date().toLocaleString();
 
-            // Swap Buttons: Hide "View Report", Show "Save to History"
+            // Swap Buttons
             if (viewReportBtn) viewReportBtn.style.display = "none";
-            if (saveHistoryBtn) saveHistoryBtn.style.display = "inline-block";
+            if (saveHistoryBtn) saveHistoryBtn.style.display = "block"; 
+            if (scanAgainBtn) scanAgainBtn.style.display = "flex";
+
+            // --- READ SETTINGS (Auto-Save) ---
+            const autoSave = getSetting('autoSave', false); // Default false, but user can toggle
+            if (autoSave) {
+                saveToHistoryInternal(true); // true = silent mode (no alert)
+                if (saveHistoryBtn) saveHistoryBtn.innerText = "Saved to History ✓";
+                if (saveHistoryBtn) saveHistoryBtn.disabled = true;
+            }
 
             // Show Results Grid with Animation
             resultsGrid.style.display = "grid";
@@ -267,27 +320,69 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ===============================
-    // TASK 2: SAVE TO HISTORY LOGIC
+    // TASK 2: SAVE TO HISTORY LOGIC (REFACTORED)
     // ===============================
+    
+    // Internal function to handle saving logic
+    function saveToHistoryInternal(isSilent = false) {
+        if (!currentAnalysisResult.label) return;
+
+        // 1. Get existing history
+        let history = JSON.parse(localStorage.getItem('cutis_history') || '[]');
+
+        // 2. Add new record to the top
+        history.unshift(currentAnalysisResult);
+
+        // 3. Save back to localStorage
+        try {
+            localStorage.setItem('cutis_history', JSON.stringify(history));
+            if (!isSilent) {
+                window.location.href = 'history.html';
+            }
+        } catch (e) {
+            if (!isSilent) alert("Storage full! Please clear old history.");
+            console.error(e);
+        }
+    }
+
     if (saveHistoryBtn) {
         saveHistoryBtn.addEventListener("click", () => {
-            if (!currentAnalysisResult.label) return;
+            saveToHistoryInternal(false); // Not silent, will redirect
+        });
+    }
 
-            // 1. Get existing history
-            let history = JSON.parse(localStorage.getItem('cutis_history') || '[]');
+    // ===============================
+    // TASK 3: "SCAN AGAIN" LOGIC
+    // ===============================
+    if (scanAgainBtn) {
+        scanAgainBtn.addEventListener("click", () => {
+            
+            // 1. Reset Global State
+            currentAnalysisResult = {
+                image: null,
+                label: null,
+                confidence: null,
+                timestamp: null
+            };
 
-            // 2. Add new record to the top
-            history.unshift(currentAnalysisResult);
+            // 2. Hide Results
+            resultsGrid.style.display = "none";
 
-            // 3. Save back to localStorage
-            try {
-                localStorage.setItem('cutis_history', JSON.stringify(history));
-                // 4. Redirect
-                window.location.href = 'history.html';
-            } catch (e) {
-                alert("Storage full! Please clear old history.");
-                console.error(e);
+            // 3. Clear Inputs
+            fileInput.value = ""; // Clear selected file
+            if (scanImage) scanImage.src = ""; // Clear preview image
+
+            // 4. Reset Button States (Back to default)
+            if (saveHistoryBtn) {
+                saveHistoryBtn.style.display = "none";
+                saveHistoryBtn.innerText = "Save to History"; // Reset text if auto-save changed it
+                saveHistoryBtn.disabled = false;
             }
+            if (scanAgainBtn) scanAgainBtn.style.display = "none";
+            if (viewReportBtn) viewReportBtn.style.display = "block";
+
+            // 5. Scroll to Top (Show upload section)
+            window.scrollTo({ top: 0, behavior: "smooth" });
         });
     }
 

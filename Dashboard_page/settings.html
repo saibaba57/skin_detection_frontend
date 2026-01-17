@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUTIS AI - Settings</title>
+    <link rel="stylesheet" href="dash-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* [INSERT THE CSS CODE FROM BLOCK 1 HERE] */
+        /* For the sake of this file working immediately, I assume the CSS above is applied */
+    </style>
+</head>
+<body class="dark-theme">
+
+    <div class="app-layout">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </div>
+                <span class="brand-name">CUTIS AI</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                        <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                        <line x1="9" y1="13" x2="9.01" y2="13"></line>
+                        <line x1="9" y1="17" x2="9.01" y2="17"></line>
+                        <line x1="13" y1="9" x2="13.01" y2="9"></line>
+                        <line x1="13" y1="13" x2="13.01" y2="13"></line>
+                        <line x1="13" y1="17" x2="13.01" y2="17"></line>
+                    </svg>
+                    New Scan
+                </a>
+                <a href="history.html" class="nav-item">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    History
+                </a>
+                <a href="settings.html" class="nav-item active">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                    Settings
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item logout">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="settings-container">
+                <div class="settings-header">
+                    <h2>System Settings</h2>
+                    <p style="opacity: 0.6; font-size: 0.95rem;">Manage device preferences, analysis logic, and interface options.</p>
+                </div>
+
+                <div class="settings-grid">
+                    
+                    <div class="setting-card anim-delay-1">
+                        <h3>📷 Camera & Device</h3>
+                        <div class="form-group">
+                            <label for="cameraSelect">Default Camera Source</label>
+                            <select id="cameraSelect" class="form-control">
+                                <option value="default">System Default</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="resolutionSelect">Capture Resolution</label>
+                            <select id="resolutionSelect" class="form-control">
+                                <option value="1080">High Definition (1080p)</option>
+                                <option value="720">Standard (720p)</option>
+                                <option value="480">Low Bandwidth (480p)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-card anim-delay-1">
+                        <h3>🖼️ Image Processing</h3>
+                        <div class="toggle-row">
+                            <span>Auto-compress Large Images</span>
+                            <label class="switch">
+                                <input type="checkbox" id="autoCompress">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label>Max Upload Size: <strong id="maxSizeDisplay" style="color: #10b981;">5MB</strong></label>
+                            <input type="range" id="maxSizeSlider" min="1" max="10" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Default Input Method</label>
+                            <select id="defaultInputMethod" class="form-control">
+                                <option value="upload">File Upload</option>
+                                <option value="camera">Live Camera</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="setting-card anim-delay-2">
+                        <h3>🧠 AI Analysis Logic</h3>
+                        <div class="toggle-row">
+                            <span>Auto-save Reports to History</span>
+                            <label class="switch">
+                                <input type="checkbox" id="autoSave">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span>Display Confidence Score</span>
+                            <label class="switch">
+                                <input type="checkbox" id="showConfidence">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span>Debug Mode (Logs)</span>
+                            <label class="switch">
+                                <input type="checkbox" disabled>
+                                <span class="slider" style="opacity: 0.5;"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-card anim-delay-2">
+                        <h3>🎨 Interface & Theme</h3>
+                        <div class="toggle-row">
+                            <span>Dark Mode</span>
+                            <label class="switch">
+                                <input type="checkbox" id="darkModeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <span>Compact Layout</span>
+                            <label class="switch">
+                                <input type="checkbox" id="compactModeToggle">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="setting-card anim-delay-3">
+                        <h3>🛡️ Privacy & Storage</h3>
+                        <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1.5rem; line-height: 1.5;">
+                            All patient data and scan history are stored locally on this device. No data is sent to the cloud.
+                        </p>
+                        <div class="form-group">
+                            <button class="btn btn-danger" style="width: 100%; margin-bottom: 0.75rem;" onclick="SettingsApp.clearHistory()">
+                                Clear Scan History
+                            </button>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="SettingsApp.clearCache()">
+                                Clear Image Cache
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-card anim-delay-3">
+                        <h3>ℹ️ System Info</h3>
+                        <div class="form-group">
+                            <label>Application Name</label>
+                            <input type="text" class="form-control" value="CUTIS AI Dashboard" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Core Version</label>
+                            <input type="text" class="form-control" value="v1.2.0 (Stable)" readonly>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/settings.js"></script>
+    <script>
+        // Optional: Simple sidebar toggle for mobile matching dashboard logic
+        const sidebar = document.getElementById('sidebar');
+        // Add specific mobile toggle logic here if needed, or rely on main dash.js if shared
+    </script>
+</body>
+</html>
