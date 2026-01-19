@@ -39,13 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const saveHistoryBtn = document.getElementById("save-history-btn");
     const viewReportBtn = document.getElementById("view-report-btn");
-    // NEW: Scan Again Button Selector
     const scanAgainBtn = document.getElementById("scan-again-btn");
+
+    // NEW HELP SECTION SELECTORS
+    const productHelpSection = document.getElementById("product-help-section");
+    const productHelpLink = document.getElementById("product-help-link");
 
     const diagnosisTitle = document.querySelector(".diagnosis-title");
     const confidenceText = document.querySelector(".meter-label span:last-child");
     const confidenceBar = document.querySelector(".progress-fill");
-    const confidenceContainer = document.querySelector(".confidence-meter"); // Added for toggling visibility
+    const confidenceContainer = document.querySelector(".confidence-meter");
 
     // ===============================
     // FILE INPUT (HIDDEN)
@@ -111,43 +114,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // ===============================
-    // TASK 1: LIVE CAMERA LOGIC (UPDATED WITH SETTINGS)
+    // TASK 1: LIVE CAMERA LOGIC
     // ===============================
-    
-    // 1. Open Camera
     if (liveCameraBtn) {
         liveCameraBtn.addEventListener("click", async () => {
             try {
-                cameraModal.style.display = "flex"; // Show Modal
-
-                // --- READ SETTINGS ---
+                cameraModal.style.display = "flex";
                 const preferredDevice = getSetting('cameraDeviceId', 'default');
-                const preferredRes = getSetting('resolution', '1080'); // 1080, 720, 480
-                
-                // Construct constraints based on settings
-                const constraints = {
-                    video: {
-                        height: { ideal: parseInt(preferredRes) }
-                    }
-                };
+                const preferredRes = getSetting('resolution', '1080');
+                const constraints = { video: { height: { ideal: parseInt(preferredRes) } } };
 
                 if (preferredDevice !== 'default') {
                     constraints.video.deviceId = { exact: preferredDevice };
                 } else {
-                    constraints.video.facingMode = "environment"; // Default fallback
+                    constraints.video.facingMode = "environment";
                 }
 
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
             } catch (err) {
                 console.error("Camera Error:", err);
-                alert("Unable to access camera. Please check permissions or settings.");
+                alert("Unable to access camera.");
                 cameraModal.style.display = "none";
             }
         });
     }
 
-    // 2. Close Camera
     if (closeCameraBtn) {
         closeCameraBtn.addEventListener("click", stopCamera);
     }
@@ -162,21 +154,14 @@ document.addEventListener("DOMContentLoaded", () => {
         cameraModal.style.display = "none";
     }
 
-    // 3. Capture Frame
     if (captureBtn) {
         captureBtn.addEventListener("click", () => {
             const context = canvasElement.getContext('2d');
             canvasElement.width = videoElement.videoWidth;
             canvasElement.height = videoElement.videoHeight;
-            
-            // Draw video frame to canvas
             context.drawImage(videoElement, 0, 0);
-            
-            // Convert to Blob and send to backend
             canvasElement.toBlob((blob) => {
-                stopCamera(); // Close modal
-                
-                // Create a File object from Blob to reuse handleFileUpload
+                stopCamera();
                 const file = new File([blob], "camera_capture.jpg", { type: "image/jpeg" });
                 handleFileUpload(file);
             }, 'image/jpeg', 0.95);
@@ -187,36 +172,28 @@ document.addEventListener("DOMContentLoaded", () => {
     // CORE ML UPLOAD + FETCH LOGIC
     // ===============================
     async function handleFileUpload(file) {
-
-        console.log("handleFileUpload CALLED"); 
-
         if (!file.type.startsWith("image/")) {
             alert("Please upload a valid image");
             return;
         }
 
-        // --- READ SETTINGS (Max Size Check) ---
         const maxSizeMB = getSetting('maxImageSize', 5);
         if (file.size > maxSizeMB * 1024 * 1024) {
-            alert(`File too large. Max allowed size is ${maxSizeMB}MB (See Settings).`);
+            alert(`File too large.`);
             return;
         }
 
         resultsGrid.style.display = "none";
+        // Reset Help Section
+        if (productHelpSection) productHelpSection.style.display = "none";
 
-        // UI Loading State
         const originalContent = uploadCard.innerHTML;
-        uploadCard.innerHTML = `
-            <div class="spinner"></div>
-            <p style="margin-top:1rem">Processing Scan...</p>
-        `;
+        uploadCard.innerHTML = `<div class="spinner"></div><p style="margin-top:1rem">Processing Scan...</p>`;
         uploadCard.style.pointerEvents = "none";
 
-        // Preview image
         const reader = new FileReader();
         reader.onload = e => {
             if (scanImage) scanImage.src = e.target.result;
-            // Store base64 for history saving later
             currentAnalysisResult.image = e.target.result;
         };
         reader.readAsDataURL(file);
@@ -230,162 +207,94 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: formData
             });
 
-            if (!response.ok) {
-                throw new Error(`Backend returned ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`Backend returned ${response.status}`);
 
             const data = await response.json();
-            console.log("Backend Response:", data);
-
-            // Restore Upload Card
             uploadCard.innerHTML = originalContent;
             uploadCard.style.pointerEvents = "auto";
 
-            if (data.success === false) {
-                throw new Error(data.error || "Prediction failed");
-            }
-
-            if (!Array.isArray(data.predictions) || data.predictions.length === 0) {
+            if (!data.predictions || data.predictions.length === 0) {
                 alert("No skin condition detected");
                 return;
             }
 
-            const predictions = data.predictions;
-            
-            // Extract top prediction data
-            const topCondition = predictions[0].condition || "Unknown";
-            const topConfidence = predictions[0].confidence || 0;
+            const topCondition = data.predictions[0].condition || "Unknown";
+            const topConfidence = data.predictions[0].confidence || 0;
 
-            // Update UI
-            diagnosisTitle.innerText = predictions
-                .map(p => (p.condition || "Unknown").toUpperCase())
-                .join(", ");
+            diagnosisTitle.innerText = topCondition.toUpperCase();
 
-            // --- READ SETTINGS (Show/Hide Confidence) ---
             const showConfidence = getSetting('showConfidence', true);
-            
             if (showConfidence) {
-                if(confidenceContainer) confidenceContainer.style.display = "block"; // Ensure parent is visible
+                if(confidenceContainer) confidenceContainer.style.display = "block";
                 confidenceText.innerText = `${topConfidence}%`;
                 confidenceBar.style.width = `${topConfidence}%`;
             } else {
-                // Hide confidence meter if setting is disabled
                 if(confidenceContainer) confidenceContainer.style.display = "none";
-                else confidenceBar.style.width = "0%"; // Fallback
             }
 
-            const dateSpan = document.querySelector(".badge-date");
-            const now = new Date();
-            const timestampStr = `Today, ${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
-            if (dateSpan) dateSpan.textContent = timestampStr;
-
-            // --- PREPARE DATA ---
             currentAnalysisResult.label = topCondition;
             currentAnalysisResult.confidence = topConfidence;
             currentAnalysisResult.timestamp = new Date().toLocaleString();
 
-            // Swap Buttons
+            // VISIBILITY LOGIC FOR HELP SECTION
+            if (productHelpSection && topConfidence >= 50) {
+                productHelpSection.style.display = "block";
+            }
+
             if (viewReportBtn) viewReportBtn.style.display = "none";
             if (saveHistoryBtn) saveHistoryBtn.style.display = "block"; 
             if (scanAgainBtn) scanAgainBtn.style.display = "flex";
 
-            // --- READ SETTINGS (Auto-Save) ---
-            const autoSave = getSetting('autoSave', false); // Default false, but user can toggle
-            if (autoSave) {
-                saveToHistoryInternal(true); // true = silent mode (no alert)
-                if (saveHistoryBtn) saveHistoryBtn.innerText = "Saved to History ✓";
-                if (saveHistoryBtn) saveHistoryBtn.disabled = true;
-            }
-
-            // Show Results Grid with Animation
             resultsGrid.style.display = "grid";
-            resultsGrid.style.opacity = "0";
-            resultsGrid.style.transform = "translateY(20px)";
-            void resultsGrid.offsetWidth;
-
-            resultsGrid.style.transition = "0.5s";
             resultsGrid.style.opacity = "1";
             resultsGrid.style.transform = "translateY(0)";
 
-            if (window.innerWidth < 768) {
-                resultsGrid.scrollIntoView({ behavior: "smooth" });
-            }
-
         } catch (err) {
-            console.error("Frontend Error:", err);
+            console.error("Error:", err);
             uploadCard.innerHTML = originalContent;
             uploadCard.style.pointerEvents = "auto";
             alert(`Error: ${err.message}`);
         }
     }
 
-    // ===============================
-    // TASK 2: SAVE TO HISTORY LOGIC (REFACTORED)
-    // ===============================
-    
-    // Internal function to handle saving logic
+    // REDIRECT TO PRODUCT PAGE LOGIC
+    if (productHelpLink) {
+        productHelpLink.addEventListener("click", () => {
+            const disease = encodeURIComponent(currentAnalysisResult.label);
+            const confidence = encodeURIComponent(currentAnalysisResult.confidence);
+            window.location.href = `product.html?disease=${disease}&confidence=${confidence}`;
+        });
+    }
+
     function saveToHistoryInternal(isSilent = false) {
         if (!currentAnalysisResult.label) return;
-
-        // 1. Get existing history
         let history = JSON.parse(localStorage.getItem('cutis_history') || '[]');
-
-        // 2. Add new record to the top
         history.unshift(currentAnalysisResult);
-
-        // 3. Save back to localStorage
         try {
             localStorage.setItem('cutis_history', JSON.stringify(history));
-            if (!isSilent) {
-                window.location.href = 'history.html';
-            }
+            if (!isSilent) window.location.href = 'history.html';
         } catch (e) {
-            if (!isSilent) alert("Storage full! Please clear old history.");
             console.error(e);
         }
     }
 
     if (saveHistoryBtn) {
-        saveHistoryBtn.addEventListener("click", () => {
-            saveToHistoryInternal(false); // Not silent, will redirect
-        });
+        saveHistoryBtn.addEventListener("click", () => saveToHistoryInternal(false));
     }
 
-    // ===============================
-    // TASK 3: "SCAN AGAIN" LOGIC
-    // ===============================
     if (scanAgainBtn) {
         scanAgainBtn.addEventListener("click", () => {
-            
-            // 1. Reset Global State
-            currentAnalysisResult = {
-                image: null,
-                label: null,
-                confidence: null,
-                timestamp: null
-            };
-
-            // 2. Hide Results
+            currentAnalysisResult = { image: null, label: null, confidence: null, timestamp: null };
             resultsGrid.style.display = "none";
-
-            // 3. Clear Inputs
-            fileInput.value = ""; // Clear selected file
-            if (scanImage) scanImage.src = ""; // Clear preview image
-
-            // 4. Reset Button States (Back to default)
-            if (saveHistoryBtn) {
-                saveHistoryBtn.style.display = "none";
-                saveHistoryBtn.innerText = "Save to History"; // Reset text if auto-save changed it
-                saveHistoryBtn.disabled = false;
-            }
+            if (productHelpSection) productHelpSection.style.display = "none";
+            fileInput.value = "";
+            if (scanImage) scanImage.src = "";
+            if (saveHistoryBtn) saveHistoryBtn.style.display = "none";
             if (scanAgainBtn) scanAgainBtn.style.display = "none";
             if (viewReportBtn) viewReportBtn.style.display = "block";
-
-            // 5. Scroll to Top (Show upload section)
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
     }
 
-    // Expose for debugging if needed
     window.handleFileUpload = handleFileUpload;
 });
