@@ -1,3 +1,4 @@
+const BACKEND_URL = "https://cutisai-backend.onrender.com";
 async function login(event) {
   event.preventDefault();
 
@@ -10,7 +11,7 @@ async function login(event) {
   }
 
   try {
-    const response = await fetch("https://cutisai-backend.onrender.com/login", {
+    const response = await fetch(`${BACKEND_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
