@@ -1,14 +1,19 @@
 from flask import Flask
 from flask_cors import CORS
+import os
 
 from auth.routes import auth_bp
-from ml.predict import predict_bp   # 🔥 correct import
+from ml.predict import predict_bp
 
 app = Flask(__name__)
-app.secret_key = "supersecret"      # required for session
+app.secret_key = "supersecret"
 
-# Enable CORS properly
-CORS(app, supports_credentials=True)
+# ✅ FIXED CORS (mobile + netlify safe)
+CORS(
+    app,
+    supports_credentials=True,
+    resources={r"/*": {"origins": "*"}}
+)
 
 # Register blueprints
 app.register_blueprint(auth_bp)
@@ -18,5 +23,7 @@ app.register_blueprint(predict_bp)
 def home():
     return "Backend running successfully"
 
+# ✅ FIXED Render-compatible run
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)

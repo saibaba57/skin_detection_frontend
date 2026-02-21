@@ -1,3 +1,4 @@
+const BACKEND_URL = "https://cutisai-backend.onrender.com";
 async function login(event) {
     event.preventDefault();
 
@@ -10,16 +11,15 @@ async function login(event) {
         return;
     }
 
-    try {
-        // Core logic and endpoint preserved exactly
-        const response = await fetch("http://127.0.0.1:5000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            credentials: "include", // Essential for session handling
-            body: JSON.stringify({ email, password })
-        });
+  try {
+    const response = await fetch("http://127.0.0.1:5000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",   // 🔥🔥 THIS WAS MISSING
+      body: JSON.stringify({ email, password })
+    });
 
         const data = await response.json();
         console.log("Login response:", data);
