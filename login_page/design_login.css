@@ -1,29 +1,12 @@
-/* -----------------------------------------------------------
-   GLOBAL VARIABLES & RESET
-   ----------------------------------------------------------- */
-   :root {
-    /* Colors - Dark Medical Theme */
-    --bg-deep: #020617;        /* Very dark slate/blue */
-    --bg-card: rgba(15, 23, 42, 0.6);
-    --primary-accent: #0ea5e9; /* Medical Cyan/Blue */
-    --primary-glow: rgba(14, 165, 233, 0.4);
-    --secondary-accent: #2dd4bf; /* Teal */
-    
-    /* Text Colors */
+/* --- 1. CORE VARIABLES --- */
+:root {
+    --primary: #2dd4bf;         
+    --primary-glow: rgba(45, 212, 191, 0.3);
+    --bg-dark: #060910;         
+    --bg-card: rgba(15, 23, 42, 0.5);
     --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --text-placeholder: #475569;
-    
-    /* Borders & Glass */
-    --border-glass: rgba(255, 255, 255, 0.08);
-    --border-focus: rgba(14, 165, 233, 0.6);
-    
-    /* Typography */
-    --font-heading: 'Space Grotesk', sans-serif;
-    --font-body: 'Manrope', sans-serif;
-    
-    /* Transitions */
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --text-dim: #94a3b8;
+    --border: rgba(255, 255, 255, 0.08);
 }
 
 * {
@@ -33,146 +16,109 @@
 }
 
 body {
-    background-color: var(--bg-deep);
-    font-family: var(--font-body);
+    background-color: var(--bg-dark);
     color: var(--text-main);
-    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Prevent scrollbars from background blobs */
+    overflow: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
-/* -----------------------------------------------------------
-   AMBIENT BACKGROUND ANIMATION
-   ----------------------------------------------------------- */
+/* --- 2. AMBIENT BACKGROUND --- */
 .ambient-background {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     z-index: -1;
-    overflow: hidden;
 }
 
 .blob {
     position: absolute;
     border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
+    filter: blur(100px);
+    opacity: 0.12;
     animation: float 20s infinite ease-in-out;
 }
 
-.blob-1 {
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, #1e3a8a 0%, transparent 70%);
-    top: -10%;
-    left: -10%;
-    animation-delay: 0s;
-}
-
-.blob-2 {
-    width: 400px;
-    height: 400px;
-    background: radial-gradient(circle, #0f766e 0%, transparent 70%); /* Dark Teal */
-    bottom: -10%;
-    right: -10%;
-    animation-delay: -5s;
-}
-
-.blob-3 {
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, #312e81 0%, transparent 70%); /* Indigo */
-    top: 40%;
-    left: 40%;
-    opacity: 0.3;
-    animation-delay: -10s;
-}
+.blob-1 { width: 400px; height: 400px; background: var(--primary); top: -10%; left: -5%; }
+.blob-2 { width: 500px; height: 500px; background: #0f766e; bottom: -10%; right: -5%; animation-delay: -5s; }
+.blob-3 { width: 300px; height: 300px; background: #1e3a8a; top: 40%; left: 30%; opacity: 0.08; }
 
 @keyframes float {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
-    100% { transform: translate(0, 0) scale(1); }
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(20px, -40px) scale(1.05); }
 }
 
-/* -----------------------------------------------------------
-   LOGIN CARD WRAPPER
-   ----------------------------------------------------------- */
+/* --- 3. THE CARD (SYMMETRY & ALIGNMENT) --- */
 .login-wrapper {
     width: 100%;
+    max-width: 460px;
     padding: 20px;
     display: flex;
     justify-content: center;
-    perspective: 1000px;
 }
 
 .login-card {
     background: var(--bg-card);
     width: 100%;
-    max-width: 420px;
-    padding: 3rem 2.5rem;
-    border-radius: 24px;
-    border: 1px solid var(--border-glass);
-    box-shadow: 
-        0 25px 50px -12px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(255, 255, 255, 0.05) inset; /* Inner light rim */
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    
+    padding: 3.5rem 3rem;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 40px 100px -20px rgba(0,0,0,0.7);
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    
-    transition: transform 0.4s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth);
-    animation: slideUp 0.8s var(--ease-smooth) forwards;
-    opacity: 0;
-    transform: translateY(20px);
+    align-items: center; /* Forces all children to the middle */
+    text-align: center;   /* Centers text specifically */
+    animation: cardEntry 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.login-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6);
-}
-
-/* -----------------------------------------------------------
-   HEADER & TYPOGRAPHY
-   ----------------------------------------------------------- */
 .card-header {
-    text-align: center;
+    width: 100%;
+    margin-bottom: 2.5rem;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.badge {
+    background: rgba(45, 212, 191, 0.1);
+    color: var(--primary);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 1.2rem;
+    border: 1px solid rgba(45, 212, 191, 0.2);
 }
 
 .brand-name {
-    font-family: var(--font-heading);
-    font-size: 2.5rem;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -1.5px;
     margin-bottom: 0.5rem;
-    
-    /* Gradient Text */
-    background: linear-gradient(135deg, #ffffff 20%, var(--primary-accent) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    
-    text-shadow: 0 4px 12px rgba(14, 165, 233, 0.15);
+    color: #fff;
 }
+
+.brand-name span { color: var(--primary); }
 
 .subtitle {
     font-size: 0.95rem;
-    color: var(--text-muted);
-    font-weight: 400;
-    letter-spacing: 0.02em;
+    color: var(--text-dim);
+    max-width: 280px;
+    margin: 0 auto;
 }
 
-/* -----------------------------------------------------------
-   FORM ELEMENTS
-   ----------------------------------------------------------- */
+/* --- 4. REACTIVE FORM --- */
 .login-form {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -181,134 +127,95 @@ body {
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    position: relative;
+    align-items: flex-start; /* Keeps labels left-aligned relative to their input */
+    gap: 0.6rem;
+    width: 100%;
 }
 
 .input-group label {
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.8rem;
+    font-weight: 600;
     color: var(--text-main);
-    margin-left: 4px;
+    padding-left: 4px;
 }
 
 .input-group input {
     width: 100%;
-    background: rgba(2, 6, 23, 0.5);
-    border: 1px solid var(--border-glass);
-    border-radius: 12px;
-    padding: 14px 16px;
-    font-family: var(--font-body);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.1rem;
+    color: #fff;
+    font-family: inherit;
     font-size: 1rem;
-    color: var(--text-main);
-    outline: none;
-    transition: all 0.3s var(--ease-smooth);
-}
-
-.input-group input::placeholder {
-    color: var(--text-placeholder);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .input-group input:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.1);
-    background: rgba(2, 6, 23, 0.8);
+    outline: none;
+    border-color: var(--primary);
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.15);
+    transform: translateY(-1px);
 }
 
-/* -----------------------------------------------------------
-   BUTTONS
-   ----------------------------------------------------------- */
+/* --- 5. HIGH-REACTIVE BUTTON --- */
 .btn-primary {
     width: 100%;
-    padding: 14px;
-    margin-top: 0.5rem;
-    border-radius: 12px;
+    background: var(--primary);
+    color: #000;
     border: none;
-    
-    /* Gradient Button */
-    background: linear-gradient(135deg, var(--primary-accent), #0284c7);
-    color: #ffffff;
-    
-    font-family: var(--font-body);
-    font-weight: 600;
+    padding: 1.2rem;
+    border-radius: 14px;
+    font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    
-    transition: all 0.3s var(--ease-smooth);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 0 20px var(--primary-glow);
+    gap: 12px;
+    margin-top: 1rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 0 25px var(--primary-glow);
-    filter: brightness(110%);
+    background: #5eead4;
+    transform: scale(1.02);
+    box-shadow: 0 15px 30px rgba(45, 212, 191, 0.3);
 }
 
-.btn-primary:active {
-    transform: translateY(0);
-}
+.btn-primary:active { transform: scale(0.98); }
 
-.arrow-icon {
-    width: 18px;
-    height: 18px;
-    transition: transform 0.3s var(--ease-smooth);
-}
+.arrow { transition: transform 0.3s ease; font-size: 1.2rem; }
+.btn-primary:hover .arrow { transform: translateX(6px); }
 
-.btn-primary:hover .arrow-icon {
-    transform: translateX(4px);
-}
-
-/* -----------------------------------------------------------
-   FOOTER / HELPER TEXT
-   ----------------------------------------------------------- */
+/* --- 6. FOOTER & EXTRAS --- */
 .card-footer {
-    display: flex;
-    justify-content: center;
-    border-top: 1px solid var(--border-glass);
+    width: 100%;
+    margin-top: 2.5rem;
     padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
 }
 
 .secure-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
     font-size: 0.75rem;
-    color: #64748b;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    user-select: none;
+    color: var(--text-dim);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255,255,255,0.03);
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* -----------------------------------------------------------
-   ANIMATIONS
-   ----------------------------------------------------------- */
-@keyframes slideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
+@keyframes cardEntry {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* -----------------------------------------------------------
-   RESPONSIVE ADJUSTMENTS
-   ----------------------------------------------------------- */
+/* Mobile Responsiveness */
 @media (max-width: 480px) {
-    .login-card {
-        padding: 2rem 1.5rem;
-    }
-    
-    .brand-name {
-        font-size: 2rem;
-    }
+    .login-card { padding: 2.5rem 1.5rem; }
+    .brand-name { font-size: 2rem; }
 }
